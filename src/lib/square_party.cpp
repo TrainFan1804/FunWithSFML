@@ -14,7 +14,7 @@ void squareParty()
     std::srand(std::time(0));
 
     sf::RenderWindow window(sf::VideoMode(WINDOW_WIDHT, WINDOW_HEIGHT),
-                            "Fun with vectors",
+                            "Square Party",
                             sf::Style::Titlebar); // need this to make the winow
                                                 // floating on my system
     window.setFramerateLimit(60);
