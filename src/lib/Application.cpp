@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "moving.h"
 #include "triangle_classic.h"
 #include "square_party.h"
 
@@ -11,7 +12,7 @@ Application::Application()
 
 int Application::run()
 {
-    std::cout << "What do you want to start?\n1. Triangle classic\n2. square party" << std::endl;
+    std::cout << "What do you want to start?\n1. Triangle classic\n2. square party\n3. moving" << std::endl;
     int choice;
     std::cin >> choice;
 
@@ -22,6 +23,9 @@ int Application::run()
         break;
     case 2:
         squareParty();
+        break;
+    case 3:
+        moving();
         break;
     default:
         std::cout << "Something went wrong!";

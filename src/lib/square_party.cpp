@@ -11,8 +11,6 @@ const int WINDOW_HEIGHT = 800;
 
 void squareParty()
 {
-    std::srand(std::time(0));
-
     sf::RenderWindow window(sf::VideoMode(WINDOW_WIDHT, WINDOW_HEIGHT),
                             "Square Party",
                             sf::Style::Titlebar); // need this to make the winow
@@ -100,5 +98,4 @@ void squareParty()
 
         window.display();
     }
-
 }
