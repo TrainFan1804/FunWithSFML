@@ -34,7 +34,8 @@ void pong()
 
     const int BALL_SIZE = SLIDER_SIZE_X;
     sf::RectangleShape ball(sf::Vector2f(BALL_SIZE, BALL_SIZE));
-    ball.setPosition(sf::Vector2f(WINDOW_WIDHT / 2.f - BALL_SIZE, WINDOW_HEIGHT / 2.f - BALL_SIZE));
+    ball.setPosition(sf::Vector2f(WINDOW_WIDHT / 2.f - BALL_SIZE / 2.f, WINDOW_HEIGHT / 2.f - BALL_SIZE / 2.f));
+    sf::Vector2f ball_velo(5.f, 5.f);
 
     while (window.isOpen())
     {
@@ -43,11 +44,42 @@ void pong()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-                player_one.setPosition(sf::Vector2f(SLIDER_OFF_X, player_one.getPosition().y - 20));
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-                player_one.setPosition(sf::Vector2f(SLIDER_OFF_X, player_one.getPosition().y + 20));
         }
+
+        // this is ugly but I don't care rn
+        int dir_y = 0;
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+            dir_y = -20;
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+            dir_y = 20;
+
+        int new_y = player_one.getPosition().y + dir_y;
+        // new_y = 0 if new_y <= 0 or new_y = WINDOW_HEIGHT - SLIDER_SIZE_Y
+        new_y = std::max(0, std::min(new_y, WINDOW_HEIGHT - SLIDER_SIZE_Y));
+        player_one.setPosition(SLIDER_OFF_X, new_y);
+
+        dir_y = 0;
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+            dir_y = -20;
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+            dir_y = 20;
+
+        new_y = player_two.getPosition().y + dir_y;
+        // new_y = 0 if new_y <= 0 or new_y = WINDOW_HEIGHT - SLIDER_SIZE_Y
+        new_y = std::max(0, std::min(new_y, WINDOW_HEIGHT - SLIDER_SIZE_Y));
+        player_two.setPosition(WINDOW_WIDHT - SLIDER_OFF_X - SLIDER_SIZE_X, new_y);
+
+        ball.move(ball_velo);
+        // if ball hit bootm / top reverse velocity
+        if (ball.getPosition().y <= 0 || ball.getPosition().y + BALL_SIZE >= WINDOW_HEIGHT)
+            ball_velo.y = -ball_velo.y;
+        // if ball hit right / left reverse velocity  (is wrong but I didn't implement score points yet)
+        if (ball.getPosition().x <= 0 || ball.getPosition().x + BALL_SIZE >= WINDOW_WIDHT)
+            ball_velo.x = -ball_velo.x;
+        // if ball hit player_one / player_two reverse velocity as well
+        if (ball.getGlobalBounds().intersects(player_one.getGlobalBounds())
+                || ball.getGlobalBounds().intersects(player_two.getGlobalBounds()))
+            ball_velo.x = -ball_velo.x;
 
         window.clear();
         window.draw(player_one);
