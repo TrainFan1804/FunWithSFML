@@ -40,15 +40,16 @@ void moving()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-                moveVertex(quad, -5, 0);
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-                moveVertex(quad, 5, 0);
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-                moveVertex(quad, 0, -5);
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-                moveVertex(quad, 0, 5);
         }
+
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+            moveVertex(quad, -5, 0);
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+            moveVertex(quad, 5, 0);
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+            moveVertex(quad, 0, -5);
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+            moveVertex(quad, 0, 5);
 
         window.clear();
         window.draw(quad);
