@@ -7,6 +7,9 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
+#include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/Font.hpp>
+#include <string>
 
 const int VERT_ARRAY_SIZE = 4;
 const int WINDOW_WIDHT = 1000;
@@ -36,6 +39,17 @@ void pong()
     sf::RectangleShape ball(sf::Vector2f(BALL_SIZE, BALL_SIZE));
     ball.setPosition(sf::Vector2f(WINDOW_WIDHT / 2.f - BALL_SIZE / 2.f, WINDOW_HEIGHT / 2.f - BALL_SIZE / 2.f));
     sf::Vector2f ball_velo(5.f, 5.f);
+
+    int score_player_one = 0;
+    int score_player_two = 0;
+    sf::Text score_text;
+    sf::Font font;
+    font.loadFromFile("../easyfont.otf");
+    score_text.setFont(font);
+    score_text.setCharacterSize(44);
+    score_text.setStyle(sf::Text::Bold);
+    score_text.setFillColor(sf::Color::White);
+    score_text.setPosition(WINDOW_WIDHT / 2.f, 20);
 
     while (window.isOpen())
     {
@@ -73,18 +87,37 @@ void pong()
         // if ball hit bootm / top reverse velocity
         if (ball.getPosition().y <= 0 || ball.getPosition().y + BALL_SIZE >= WINDOW_HEIGHT)
             ball_velo.y = -ball_velo.y;
-        // if ball hit right / left reverse velocity  (is wrong but I didn't implement score points yet)
-        if (ball.getPosition().x <= 0 || ball.getPosition().x + BALL_SIZE >= WINDOW_WIDHT)
+        // if ball hit right / left reverse velocity (Now the ball should be removed and placed in the mid again)
+        if (ball.getPosition().x <= 0)
+        {
             ball_velo.x = -ball_velo.x;
-        // if ball hit player_one / player_two reverse velocity as well
+            score_player_two++; 
+        } 
+        if (ball.getPosition().x + BALL_SIZE >= WINDOW_WIDHT)
+        {
+            ball_velo.x = -ball_velo.x;
+            score_player_one++;
+        }
+
+        // std::cout << "Player 1: " << score_player_one << ": Player 2: " << score_player_two << std::endl;
+        /*
+         * why does this display score_player_one on the left and score_player_two on the opposite side of the ':'?
+         * Not anymore because I switched position but see uncomment output how it should ACTUALLY look
+         *
+         */
+        score_text.setString(std::to_string(score_player_two) + "      :     " + std::to_string(score_player_one));
+
+        // if ball hit player_one / player_two reverse velocity as well, this bug xtrem
         if (ball.getGlobalBounds().intersects(player_one.getGlobalBounds())
                 || ball.getGlobalBounds().intersects(player_two.getGlobalBounds()))
             ball_velo.x = -ball_velo.x;
 
         window.clear();
+
         window.draw(player_one);
         window.draw(player_two);
         window.draw(ball);
+        window.draw(score_text);
 
         window.display();
     }
