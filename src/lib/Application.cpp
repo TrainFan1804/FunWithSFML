@@ -2,7 +2,7 @@
 #include "moving.h"
 #include "triangle_classic.h"
 #include "square_party.h"
-#include "pong.h"
+#include "pong/pong.h"
 
 #include <iostream>
 
