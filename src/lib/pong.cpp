@@ -14,10 +14,14 @@
 const int VERT_ARRAY_SIZE = 4;
 const int WINDOW_WIDHT = 1000;
 const int WINDOW_HEIGHT = 800;
+const sf::Vector2f WINDOW_MID = sf::Vector2f(WINDOW_WIDHT / 2.f, WINDOW_HEIGHT / 2.f);
 
 const int SLIDER_OFF_X = 75;
 const int SLIDER_SIZE_X = 75;
 const int SLIDER_SIZE_Y = 200;
+
+const int BALL_SIZE = SLIDER_SIZE_X;
+const sf::Vector2f BALL_MID_POS = sf::Vector2f(WINDOW_MID.x - BALL_SIZE / 2.f, WINDOW_MID.y - BALL_SIZE / 2.f);
 
 void pong()
 {
@@ -35,9 +39,8 @@ void pong()
     sf::RectangleShape player_two(sf::Vector2f(SLIDER_SIZE_X, SLIDER_SIZE_Y));
     player_two.setPosition(sf::Vector2f(WINDOW_WIDHT - SLIDER_OFF_X - SLIDER_SIZE_X, WINDOW_HEIGHT / 2.f - SLIDER_START_OFF_Y));
 
-    const int BALL_SIZE = SLIDER_SIZE_X;
     sf::RectangleShape ball(sf::Vector2f(BALL_SIZE, BALL_SIZE));
-    ball.setPosition(sf::Vector2f(WINDOW_WIDHT / 2.f - BALL_SIZE / 2.f, WINDOW_HEIGHT / 2.f - BALL_SIZE / 2.f));
+    ball.setPosition(BALL_MID_POS);
     sf::Vector2f ball_velo(5.f, 5.f);
 
     int score_player_one = 0;
@@ -87,14 +90,16 @@ void pong()
         // if ball hit bootm / top reverse velocity
         if (ball.getPosition().y <= 0 || ball.getPosition().y + BALL_SIZE >= WINDOW_HEIGHT)
             ball_velo.y = -ball_velo.y;
-        // if ball hit right / left reverse velocity (Now the ball should be removed and placed in the mid again)
+        // if ball hit right / left reverse velocity and move ball to mid
         if (ball.getPosition().x <= 0)
         {
+            ball.setPosition(BALL_MID_POS);
             ball_velo.x = -ball_velo.x;
             score_player_two++; 
         } 
         if (ball.getPosition().x + BALL_SIZE >= WINDOW_WIDHT)
         {
+            ball.setPosition(BALL_MID_POS);
             ball_velo.x = -ball_velo.x;
             score_player_one++;
         }
@@ -103,11 +108,10 @@ void pong()
         /*
          * why does this display score_player_one on the left and score_player_two on the opposite side of the ':'?
          * Not anymore because I switched position but see uncomment output how it should ACTUALLY look
-         *
          */
         score_text.setString(std::to_string(score_player_two) + "      :     " + std::to_string(score_player_one));
 
-        // if ball hit player_one / player_two reverse velocity as well, this bug xtrem
+        // if ball hit player_one / player_two reverse velocity as well, this bug when the ball hit the player's from the bottom / top
         if (ball.getGlobalBounds().intersects(player_one.getGlobalBounds())
                 || ball.getGlobalBounds().intersects(player_two.getGlobalBounds()))
             ball_velo.x = -ball_velo.x;
