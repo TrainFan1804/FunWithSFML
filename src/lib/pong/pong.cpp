@@ -1,9 +1,10 @@
 #include "pong.h"
+#include "pong_struct.h"
+#include "Ball.h"
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/VertexArray.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
@@ -11,21 +12,13 @@
 #include <SFML/Graphics/Font.hpp>
 #include <string>
 
-const int VERT_ARRAY_SIZE = 4;
-const int WINDOW_WIDHT = 1000;
-const int WINDOW_HEIGHT = 800;
-const sf::Vector2f WINDOW_MID = sf::Vector2f(WINDOW_WIDHT / 2.f, WINDOW_HEIGHT / 2.f);
-
 const int SLIDER_OFF_X = 75;
 const int SLIDER_SIZE_X = 75;
 const int SLIDER_SIZE_Y = 200;
 
-const int BALL_SIZE = SLIDER_SIZE_X;
-const sf::Vector2f BALL_MID_POS = sf::Vector2f(WINDOW_MID.x - BALL_SIZE / 2.f, WINDOW_MID.y - BALL_SIZE / 2.f);
-
 void pong()
 {
-    sf::RenderWindow window(sf::VideoMode(WINDOW_WIDHT, WINDOW_HEIGHT),
+    sf::RenderWindow window(sf::VideoMode(window_data::WINDOW_WIDHT, window_data::WINDOW_HEIGHT),
                             "Pong",
                             sf::Style::Titlebar); // need this to make the winow
                                                 // floating on my system
@@ -34,17 +27,14 @@ void pong()
     const int SLIDER_START_OFF_Y = SLIDER_SIZE_Y / 2.f;
 
     sf::RectangleShape player_one(sf::Vector2f(SLIDER_SIZE_X, SLIDER_SIZE_Y));
-    player_one.setPosition(sf::Vector2f(SLIDER_OFF_X, WINDOW_HEIGHT / 2.f - SLIDER_START_OFF_Y));
+    player_one.setPosition(sf::Vector2f(SLIDER_OFF_X, window_data::WINDOW_HEIGHT / 2.f - SLIDER_START_OFF_Y));
 
     sf::RectangleShape player_two(sf::Vector2f(SLIDER_SIZE_X, SLIDER_SIZE_Y));
-    player_two.setPosition(sf::Vector2f(WINDOW_WIDHT - SLIDER_OFF_X - SLIDER_SIZE_X, WINDOW_HEIGHT / 2.f - SLIDER_START_OFF_Y));
+    player_two.setPosition(sf::Vector2f(window_data::WINDOW_WIDHT - SLIDER_OFF_X - SLIDER_SIZE_X, window_data::WINDOW_HEIGHT / 2.f - SLIDER_START_OFF_Y));
 
-    sf::RectangleShape ball(sf::Vector2f(BALL_SIZE, BALL_SIZE));
-    ball.setPosition(BALL_MID_POS);
-    sf::Vector2f ball_velo(5.f, 5.f);
+    const int BALL_SIZE = SLIDER_SIZE_X;
+    Ball ball(sf::Vector2f(BALL_SIZE, BALL_SIZE), sf::Vector2f(5.f, 5.f));
 
-    int score_player_one = 0;
-    int score_player_two = 0;
     sf::Text score_text;
     sf::Font font;
     font.loadFromFile("../easyfont.otf");
@@ -52,7 +42,7 @@ void pong()
     score_text.setCharacterSize(44);
     score_text.setStyle(sf::Text::Bold);
     score_text.setFillColor(sf::Color::White);
-    score_text.setPosition(WINDOW_WIDHT / 2.f, 20);
+    score_text.setPosition(window_data::WINDOW_WIDHT / 2.f, 20);
 
     while (window.isOpen())
     {
@@ -72,7 +62,7 @@ void pong()
 
         int new_y = player_one.getPosition().y + dir_y;
         // new_y = 0 if new_y <= 0 or new_y = WINDOW_HEIGHT - SLIDER_SIZE_Y
-        new_y = std::max(0, std::min(new_y, WINDOW_HEIGHT - SLIDER_SIZE_Y));
+        new_y = std::max(0, std::min(new_y, window_data::WINDOW_HEIGHT - SLIDER_SIZE_Y));
         player_one.setPosition(SLIDER_OFF_X, new_y);
 
         dir_y = 0;
@@ -83,38 +73,20 @@ void pong()
 
         new_y = player_two.getPosition().y + dir_y;
         // new_y = 0 if new_y <= 0 or new_y = WINDOW_HEIGHT - SLIDER_SIZE_Y
-        new_y = std::max(0, std::min(new_y, WINDOW_HEIGHT - SLIDER_SIZE_Y));
-        player_two.setPosition(WINDOW_WIDHT - SLIDER_OFF_X - SLIDER_SIZE_X, new_y);
+        new_y = std::max(0, std::min(new_y, window_data::WINDOW_HEIGHT - SLIDER_SIZE_Y));
+        player_two.setPosition(window_data::WINDOW_WIDHT - SLIDER_OFF_X - SLIDER_SIZE_X, new_y);
 
-        ball.move(ball_velo);
-        // if ball hit bootm / top reverse velocity
-        if (ball.getPosition().y <= 0 || ball.getPosition().y + BALL_SIZE >= WINDOW_HEIGHT)
-            ball_velo.y = -ball_velo.y;
-        // if ball hit right / left reverse velocity and move ball to mid
-        if (ball.getPosition().x <= 0)
-        {
-            ball.setPosition(BALL_MID_POS);
-            ball_velo.x = -ball_velo.x;
-            score_player_two++; 
-        } 
-        if (ball.getPosition().x + BALL_SIZE >= WINDOW_WIDHT)
-        {
-            ball.setPosition(BALL_MID_POS);
-            ball_velo.x = -ball_velo.x;
-            score_player_one++;
-        }
+        ball.move();
 
         // std::cout << "Player 1: " << score_player_one << ": Player 2: " << score_player_two << std::endl;
         /*
          * why does this display score_player_one on the left and score_player_two on the opposite side of the ':'?
          * Not anymore because I switched position but see uncomment output how it should ACTUALLY look
          */
-        score_text.setString(std::to_string(score_player_two) + "      :     " + std::to_string(score_player_one));
+        score_text.setString(std::to_string(score_data::player_two) + "      :     " + std::to_string(score_data::player_one));
 
-        // if ball hit player_one / player_two reverse velocity as well, this bug when the ball hit the player's from the bottom / top
-        if (ball.getGlobalBounds().intersects(player_one.getGlobalBounds())
-                || ball.getGlobalBounds().intersects(player_two.getGlobalBounds()))
-            ball_velo.x = -ball_velo.x;
+        ball.handleCollision(player_one.getGlobalBounds());
+        ball.handleCollision(player_two.getGlobalBounds());
 
         window.clear();
 
