@@ -13,6 +13,8 @@ Ball::Ball(const sf::Vector2f &size,
                                 window_data::WINDOW_HEIGHT / 2.f - size.x / 2.f);
     _ball.setSize(size);
     _ball.setPosition(_BALL_MID_POS);
+    _ball.setOutlineThickness(10.f);
+    _ball.setOutlineColor(sf::Color::Red);
 }
 
 const sf::Vector2f &Ball::getPos()
@@ -49,33 +51,17 @@ void Ball::move()
 
 void Ball::handleCollision(const sf::Rect<float> &bounds)
 {
-    const sf::Rect<float> ballBounds = _ball.getGlobalBounds();
+    const sf::Rect<float> ball_bounds = _ball.getGlobalBounds();
 
-    if(ballBounds.intersects(bounds))
+    if(ball_bounds.intersects(bounds))
     {
-        /*
-            Still not perfect but better
-        */
-        if (ballBounds.top + ballBounds.height <= bounds.top + 5.f) 
-        {
-            _velocity.y = -_velocity.y;
-            _ball.setPosition(_ball.getPosition().x, bounds.top - ballBounds.height);
-        }
-        else if (ballBounds.top >= bounds.top + bounds.height - 5.f) 
-        {
-            _velocity.y = -_velocity.y;
-            _ball.setPosition(_ball.getPosition().x, bounds.top + bounds.height);
-        }
-        else if (ballBounds.left + ballBounds.width <= bounds.left + 5.f) 
-        {
-            _velocity.x = -_velocity.x;
-            _ball.setPosition(bounds.left - ballBounds.width, _ball.getPosition().y);
-        }
-        else if (ballBounds.left >= bounds.left + bounds.width - 5.f) 
-        {
-            _velocity.x = -_velocity.x;
-            _ball.setPosition(bounds.left + bounds.width, _ball.getPosition().y);
-        }
+        float offset = 10.f;
+        if (_velocity.x >= 0 
+            && (ball_bounds.left + ball_bounds.width) >= bounds.left)
+                offset = -offset - bounds.width;
+
+        _ball.setPosition(ball_bounds.left + offset, _ball.getPosition().y); 
+        _velocity.x = -_velocity.x;
     }
 }
 
