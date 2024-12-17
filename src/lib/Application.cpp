@@ -1,5 +1,5 @@
 #include "Application.h"
-#include "moving.h"
+#include "moving/moving.h"
 #include "triangle_classic.h"
 #include "square_party.h"
 #include "pong/pong.h"
