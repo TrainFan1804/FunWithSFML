@@ -6,11 +6,6 @@
 
 #include <iostream>
 
-Application::Application()
-{
-
-}
-
 int Application::run()
 {
     std::cout << "What do you want to start?\n1. Triangle classic\n2. square party\n3. moving\n4. pong" << std::endl;

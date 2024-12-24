@@ -4,7 +4,6 @@
 class Application
 {
 public:
-    Application();
     int run();
 };
 
