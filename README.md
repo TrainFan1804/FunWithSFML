@@ -35,10 +35,11 @@ cmake ..
 cmake --build .
 ```
 
-4. **Run the application**
+4. **Run the application starter**
 
 ```bash
-./src/FunWithSFML
+chmod 744 run.sh
+./run.sh
 ```
 
 5. **Have fun!**
