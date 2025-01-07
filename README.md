@@ -50,6 +50,7 @@ Instead of installing manually you can use the install script.
 
 ```bash
 chmod 744 install.sh
+./install.sh
 ./run.sh
 ```
 
