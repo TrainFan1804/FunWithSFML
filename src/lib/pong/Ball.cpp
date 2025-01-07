@@ -35,12 +35,14 @@ void Ball::move()
         _velocity.y = -_velocity.y;
 
     // if ball hit right / left reverse velocity and move ball to mid
+    // 140 because offset of left slider is 75 and size is also 75 also total of 150. 140 for some buffer
     if (_ball.getPosition().x <= 140)
     {
         _ball.setPosition(_BALL_MID_POS);
         _velocity.x = -_velocity.x;
         score_data::player_two++; 
     } 
+    // 140 because offset of left slider is 75 and size is also 75 also total of 150. 140 for some buffer
     if (_ball.getPosition().x + _WIDHT >= window_data::WINDOW_WIDHT - 140)
     {
         _ball.setPosition(_BALL_MID_POS);
