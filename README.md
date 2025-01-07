@@ -46,6 +46,13 @@ Make sure you are in the projects root directory!
 
 5. **Have fun!**
 
+Instead of installing manually you can use the install script.
+
+```bash
+chmod 744 install.sh
+./run.sh
+```
+
 # Overview
 
 ## Hello World Triangle
