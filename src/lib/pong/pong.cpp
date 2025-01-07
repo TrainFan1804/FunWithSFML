@@ -10,6 +10,8 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/Font.hpp>
+#include <cstdlib>
+#include <iostream>
 #include <string>
 
 const int SLIDER_OFF_X = 75;
@@ -37,7 +39,11 @@ void pong()
 
     sf::Text score_text;
     sf::Font font;
-    font.loadFromFile("../easyfont.otf");
+    if (!font.loadFromFile("assets/fonts/OpenSans-Medium.ttf"))
+    {
+        std::cerr << "Font couldn't be loaded!" << std::endl;
+        return;
+    }
     score_text.setFont(font);
     score_text.setCharacterSize(44);
     score_text.setStyle(sf::Text::Bold);

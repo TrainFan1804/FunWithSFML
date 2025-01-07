@@ -42,6 +42,8 @@ chmod 744 run.sh
 ./run.sh
 ```
 
+Make sure you are in the projects root directory!
+
 5. **Have fun!**
 
 # Overview
@@ -68,4 +70,4 @@ Here I tried to create a small game of pong.
 
 # Misc
 
-The used font in pong isn't inculded in this project!
+This project use the Open Sans font.
