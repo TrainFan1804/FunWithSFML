@@ -35,13 +35,13 @@ void Ball::move()
         _velocity.y = -_velocity.y;
 
     // if ball hit right / left reverse velocity and move ball to mid
-    if (_ball.getPosition().x <= 0)
+    if (_ball.getPosition().x <= 140)
     {
         _ball.setPosition(_BALL_MID_POS);
         _velocity.x = -_velocity.x;
         score_data::player_two++; 
     } 
-    if (_ball.getPosition().x + _WIDHT >= window_data::WINDOW_WIDHT)
+    if (_ball.getPosition().x + _WIDHT >= window_data::WINDOW_WIDHT - 140)
     {
         _ball.setPosition(_BALL_MID_POS);
         _velocity.x = -_velocity.x;
@@ -55,12 +55,10 @@ void Ball::handleCollision(const sf::Rect<float> &bounds)
 
     if(ball_bounds.intersects(bounds))
     {
-        float offset = 10.f;
-        if (_velocity.x >= 0 
-            && (ball_bounds.left + ball_bounds.width) >= bounds.left)
-                offset = -offset - bounds.width;
+        float offset = bounds.width * 0.1f;
+        if (_velocity.x >= 0)
+            offset = -offset - bounds.width;
 
-        _ball.setPosition(ball_bounds.left + offset, _ball.getPosition().y); 
         _velocity.x = -_velocity.x;
     }
 }
