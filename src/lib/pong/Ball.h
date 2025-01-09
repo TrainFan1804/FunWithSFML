@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/Texture.hpp>
 #include <SFML/System/Vector2.hpp>
 #include_next <SFML/Graphics/Drawable.hpp>
 
@@ -10,7 +11,8 @@ class Ball : public sf::Drawable
 {
 public:
     Ball(const sf::Vector2f &size, 
-            const sf::Vector2f &velo);
+            const sf::Vector2f &velo,
+            const sf::Texture &texture);
     const sf::Vector2f &getPos();
     void setPos(sf::Vector2f &pos);
     void move();

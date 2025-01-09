@@ -3,18 +3,21 @@
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Texture.hpp>
 #include <SFML/System/Vector2.hpp>
 
 Ball::Ball(const sf::Vector2f &size, 
-            const sf::Vector2f &velo)
+            const sf::Vector2f &velo,
+            const sf::Texture &texture)
     : _WIDHT(size.x), _velocity(velo)
 {
     _BALL_MID_POS = sf::Vector2f(window_data::WINDOW_WIDHT / 2.f - size.x / 2.f, 
                                 window_data::WINDOW_HEIGHT / 2.f - size.x / 2.f);
     _ball.setSize(size);
     _ball.setPosition(_BALL_MID_POS);
-    _ball.setOutlineThickness(10.f);
-    _ball.setOutlineColor(sf::Color::Red);
+    //_ball.setOutlineThickness(10.f);
+    //_ball.setOutlineColor(sf::Color::Red);
+    _ball.setTexture(&texture);
 }
 
 const sf::Vector2f &Ball::getPos()

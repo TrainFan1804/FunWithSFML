@@ -5,6 +5,7 @@
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Texture.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
@@ -44,8 +45,14 @@ void pong()
     sf::RectangleShape player_two(sf::Vector2f(SLIDER_SIZE_X, SLIDER_SIZE_Y));
     player_two.setPosition(sf::Vector2f(window_data::WINDOW_WIDHT - SLIDER_OFF_X - SLIDER_SIZE_X, window_data::WINDOW_HEIGHT / 2.f - SLIDER_START_OFF_Y));
 
+    sf::Texture texture;
+    if(!texture.loadFromFile("assets/sprites/ball.png"))
+    {
+        std::cerr << "Sprite couldn't be loaded!" << std::endl;
+        return;
+    }
     const int BALL_SIZE = SLIDER_SIZE_X;
-    Ball ball(sf::Vector2f(BALL_SIZE, BALL_SIZE), sf::Vector2f(5.f, 5.f));
+    Ball ball(sf::Vector2f(BALL_SIZE, BALL_SIZE), sf::Vector2f(5.f, 5.f), texture);
 
     sf::Text score_text;
     sf::Font font;
