@@ -9,6 +9,7 @@ namespace window_data
 
 namespace score_data
 {
+    bool score_changed = true;
     int player_one = 0;
     int player_two = 0;
 }

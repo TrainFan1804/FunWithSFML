@@ -18,6 +18,16 @@ const int SLIDER_OFF_X = 75;
 const int SLIDER_SIZE_X = 75;
 const int SLIDER_SIZE_Y = 200;
 
+static void updateText(sf::Text &text)
+{
+    if (score_data::score_changed)
+    {
+        text.setString(std::to_string(score_data::player_one) + " : " + std::to_string(score_data::player_two));
+        text.setPosition((window_data::WINDOW_WIDHT - text.getGlobalBounds().width) / 2.f, window_data::WINDOW_HEIGHT * 0.02f);
+        score_data::score_changed = false;
+    } 
+}
+
 void pong()
 {
     sf::RenderWindow window(sf::VideoMode(window_data::WINDOW_WIDHT, window_data::WINDOW_HEIGHT),
@@ -48,7 +58,6 @@ void pong()
     score_text.setCharacterSize(44);
     score_text.setStyle(sf::Text::Bold);
     score_text.setFillColor(sf::Color::White);
-    score_text.setPosition(window_data::WINDOW_WIDHT / 2.f, 20);
 
     while (window.isOpen())
     {
@@ -84,17 +93,12 @@ void pong()
 
         ball.move();
 
-        // std::cout << "Player 1: " << score_player_one << ": Player 2: " << score_player_two << std::endl;
-        /*
-         * why does this display score_player_one on the left and score_player_two on the opposite side of the ':'?
-         * Not anymore because I switched position but see uncomment output how it should ACTUALLY look
-         */
-        score_text.setString(std::to_string(score_data::player_two) + "      :     " + std::to_string(score_data::player_one));
+        updateText(score_text);
 
         ball.handleCollision(player_one.getGlobalBounds());
         ball.handleCollision(player_two.getGlobalBounds());
 
-        window.clear();
+        window.clear(sf::Color::Black);
 
         window.draw(player_one);
         window.draw(player_two);

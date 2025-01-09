@@ -12,6 +12,7 @@ namespace window_data
 
 namespace score_data 
 {
+    extern bool score_changed;  // ugly AF
     extern int player_one;
     extern int player_two;
 }
