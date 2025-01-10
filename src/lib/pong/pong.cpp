@@ -24,13 +24,18 @@ static void updateSliderPosition(sf::RectangleShape &slider,
 
     if (sf::Keyboard::isKeyPressed(upKey))
         dir_y -= SLIDER_SPEED;
-    if (sf::Keyboard::isKeyPressed(downKey))
+    else if (sf::Keyboard::isKeyPressed(downKey))
         dir_y += SLIDER_SPEED;
 
-    float new_y = slider.getPosition().y + dir_y;
-    new_y = std::max(0.f, std::min(new_y, static_cast<float>(window_data::WINDOW_HEIGHT - slider_data::SLIDER_SIZE_Y)));
+    slider.move(0, dir_y);
 
-    slider.setPosition(offset_x, new_y);
+    float slider_top = slider.getPosition().y;
+    float slider_bottom = slider_top + slider_data::SLIDER_SIZE_Y;
+
+    if (slider_top < 0) 
+        slider.setPosition(slider.getPosition().x, 0.f);
+    else if (slider_bottom > window_data::WINDOW_HEIGHT) 
+        slider.setPosition(slider.getPosition().x, window_data::WINDOW_HEIGHT - slider_data::SLIDER_SIZE_Y);
 }
 
 static void updateText(sf::Text &text)
