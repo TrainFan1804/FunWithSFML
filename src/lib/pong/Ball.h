@@ -16,7 +16,7 @@ public:
     const sf::Vector2f &getPos();
     void setPos(sf::Vector2f &pos);
     void move();
-    void handleCollision(const sf::Rect<float> &bounds); 
+    void handlePlayerCollision(const sf::Rect<float> &bounds); 
 private:
     const int _WIDHT;
     sf::Vector2f _BALL_MID_POS;

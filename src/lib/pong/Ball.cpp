@@ -15,8 +15,6 @@ Ball::Ball(const sf::Vector2f &size,
                                 window_data::WINDOW_HEIGHT / 2.f - size.x / 2.f);
     _ball.setSize(size);
     _ball.setPosition(_BALL_MID_POS);
-    //_ball.setOutlineThickness(10.f);
-    //_ball.setOutlineColor(sf::Color::Red);
     _ball.setTexture(&texture);
 }
 
@@ -56,7 +54,10 @@ void Ball::move()
     }
 }
 
-void Ball::handleCollision(const sf::Rect<float> &bounds)
+/**
+    This should be changed because this is ugly with the combination of move method
+ */
+void Ball::handlePlayerCollision(const sf::Rect<float> &bounds)
 {
     const sf::Rect<float> ball_bounds = _ball.getGlobalBounds();
 

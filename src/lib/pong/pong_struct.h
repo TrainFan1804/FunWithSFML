@@ -17,4 +17,11 @@ namespace score_data
     extern int player_two;
 }
 
+namespace slider_data 
+{
+    extern const int SLIDER_OFF_X;
+    extern const int SLIDER_SIZE_X;
+    extern const int SLIDER_SIZE_Y;
+}
+
 #endif // PONG_STUCT_H 

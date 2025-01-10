@@ -13,3 +13,10 @@ namespace score_data
     int player_one = 0;
     int player_two = 0;
 }
+
+namespace slider_data 
+{
+    const int SLIDER_OFF_X = 75;
+    const int SLIDER_SIZE_X = 75;
+    const int SLIDER_SIZE_Y = 200;
+}
