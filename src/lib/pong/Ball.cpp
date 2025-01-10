@@ -5,6 +5,41 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/System/Vector2.hpp>
+#include <climits>
+
+namespace
+{
+    enum class WallCollision
+    {
+        NONE,
+        LEFT,
+        RIGHT,
+        TOPBOTTOM
+    };
+    WallCollision checkWallCollision(sf::RectangleShape &ball, sf::Vector2f &velocity)
+    {
+        const int WIDTH = ball.getSize().x;
+
+        if (ball.getPosition().y <= 0 || ball.getPosition().y + WIDTH >= window_data::WINDOW_HEIGHT)
+        {
+            velocity.y = -velocity.y;
+            return WallCollision::TOPBOTTOM;
+        }
+
+
+        // if ball hit right / left reverse velocity and move ball to mid
+        // 140 because offset of left slider is 75 and size is also 75 also total of 150. 140 for some buffer
+        if (ball.getPosition().x <= 140)
+            return WallCollision::LEFT;
+
+
+        // 140 because offset of left slider is 75 and size is also 75 also total of 150. 140 for some buffer
+        if (ball.getPosition().x + WIDTH >= window_data::WINDOW_WIDHT - 140)
+            return WallCollision::RIGHT;
+
+        return WallCollision::NONE;
+    }
+}
 
 Ball::Ball(const sf::Vector2f &size, 
             const sf::Vector2f &velo,
@@ -31,27 +66,25 @@ void Ball::setPos(const sf::Vector2f &pos)
 void Ball::move()
 {
     _ball.move(_velocity);
-    const int _WIDHT = _ball.getSize().x;
-    // if ball hit bootm / top reverse velocity
-    if (_ball.getPosition().y <= 0 || _ball.getPosition().y + _WIDHT >= window_data::WINDOW_HEIGHT)
-        _velocity.y = -_velocity.y;
 
-    // if ball hit right / left reverse velocity and move ball to mid
-    // 140 because offset of left slider is 75 and size is also 75 also total of 150. 140 for some buffer
-    if (_ball.getPosition().x <= 140)
+    WallCollision collsion = checkWallCollision(_ball, _velocity);
+
+    switch (collsion) 
     {
+    case WallCollision::LEFT:
         _ball.setPosition(_BALL_MID_POS);
         _velocity.x = -_velocity.x;
         score_data::score_changed = true;
         score_data::player_two++; 
-    } 
-    // 140 because offset of left slider is 75 and size is also 75 also total of 150. 140 for some buffer
-    else if (_ball.getPosition().x + _WIDHT >= window_data::WINDOW_WIDHT - 140)
-    {
+        break;
+    case WallCollision::RIGHT:
         _ball.setPosition(_BALL_MID_POS);
         _velocity.x = -_velocity.x;
         score_data::score_changed = true;
         score_data::player_one++;
+        break;
+    default:
+        break;
     }
 }
 
@@ -63,16 +96,10 @@ void Ball::handlePlayerCollision(const sf::Rect<float> &bounds)
     const sf::Rect<float> ball_bounds = _ball.getGlobalBounds();
 
     if(ball_bounds.intersects(bounds))
-    {
-        float offset = bounds.width * 0.1f;
-        if (_velocity.x >= 0)
-            offset = -offset - bounds.width;
-
         _velocity.x = -_velocity.x;
-    }
 }
 
 void Ball::draw(sf::RenderTarget &target, sf::RenderStates states) const 
 {
-    target.draw(_ball, states);  // Zeichne das Rechteck
+    target.draw(_ball, states);
 }

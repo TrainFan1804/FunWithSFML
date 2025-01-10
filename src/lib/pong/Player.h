@@ -19,6 +19,7 @@ public:
     sf::RectangleShape _slider;
 private:
     const sf::Vector2f _PLAYER_MID_POS;
+    int _score;
 
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 };
