@@ -1,5 +1,5 @@
 #include "Ball.h"
-#include "pong_struct.h"
+#include "pong_data.h"
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>

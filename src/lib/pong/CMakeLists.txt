@@ -1,6 +1,6 @@
 add_library(
         Pong pong.cpp
-        pong_struct.cpp
+        pong_data.cpp
         Ball.cpp
 )
 

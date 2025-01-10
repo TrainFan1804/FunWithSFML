@@ -1,4 +1,4 @@
-#include "pong_struct.h"
+#include "pong_data.h"
 
 namespace window_data 
 {

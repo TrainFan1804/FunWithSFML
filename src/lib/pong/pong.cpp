@@ -1,5 +1,5 @@
 #include "pong.h"
-#include "pong_struct.h"
+#include "pong_data.h"
 #include "Ball.h"
 
 #include <SFML/Graphics/Color.hpp>
