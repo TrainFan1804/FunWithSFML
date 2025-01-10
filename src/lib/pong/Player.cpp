@@ -1,10 +1,6 @@
 #include "Player.h"
 #include "pong_data.h"
 
-#include <SFML/Graphics/RenderTarget.hpp>
-#include <SFML/System/Vector2.hpp>
-#include <SFML/Window/Keyboard.hpp>
-
 Player::Player(const sf::Vector2f &size,
                 const sf::Vector2f &start_pos)
     : _PLAYER_MID_POS(start_pos), _score(0)

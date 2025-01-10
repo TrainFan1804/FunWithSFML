@@ -1,12 +1,6 @@
 #include "Ball.h"
 #include "pong_data.h"
 
-#include <SFML/Graphics/Rect.hpp>
-#include <SFML/Graphics/RenderTarget.hpp>
-#include <SFML/Graphics/Texture.hpp>
-#include <SFML/System/Vector2.hpp>
-#include <climits>
-
 namespace
 {
     enum class WallCollision

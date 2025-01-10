@@ -1,7 +1,7 @@
 #ifndef PLAYER_H 
 #define PLAYER_H
 
-#include <SFML/Graphics/Rect.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/Drawable.hpp>
@@ -16,6 +16,7 @@ public:
     void setPos(const sf::Vector2f &pos);
     void move(int dir_y);
 
+    // TODO make this private again but first I need to improve ball collision with player
     sf::RectangleShape _slider;
 private:
     const sf::Vector2f _PLAYER_MID_POS;
