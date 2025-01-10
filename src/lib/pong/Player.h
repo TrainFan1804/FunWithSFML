@@ -12,14 +12,14 @@ class Player : public sf::Drawable
 public:
     Player(const sf::Vector2f &size,
             const sf::Vector2f &start_pos);
+    const sf::RectangleShape &getSlider();
     const sf::Vector2f &getPos();
     void setPos(const sf::Vector2f &pos);
     void move(int dir_y);
 
-    // TODO make this private again but first I need to improve ball collision with player
-    sf::RectangleShape _slider;
 private:
     const sf::Vector2f _PLAYER_MID_POS;
+    sf::RectangleShape _slider;
     int _score;
 
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override;

@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "pong_data.h"
+#include <SFML/Graphics/RectangleShape.hpp>
 
 Player::Player(const sf::Vector2f &size,
                 const sf::Vector2f &start_pos)
@@ -7,6 +8,11 @@ Player::Player(const sf::Vector2f &size,
 {
     _slider.setSize(size);
     _slider.setPosition(start_pos);
+}
+
+const sf::RectangleShape &Player::getSlider()
+{
+    return _slider;
 }
 
 const sf::Vector2f &Player::getPos()
