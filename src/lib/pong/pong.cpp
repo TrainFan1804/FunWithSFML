@@ -1,6 +1,7 @@
 #include "pong.h"
 #include "pong_data.h"
 #include "Ball.h"
+#include "Player.h"
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
@@ -14,30 +15,6 @@
 #include <cstdlib>
 #include <string>
 
-static void updateSliderPosition(sf::RectangleShape &slider, 
-                          float offset_x, 
-                          sf::Keyboard::Key upKey, 
-                          sf::Keyboard::Key downKey)
-{
-    const int SLIDER_SPEED = 20;
-    int dir_y = 0;
-
-    if (sf::Keyboard::isKeyPressed(upKey))
-        dir_y -= SLIDER_SPEED;
-    else if (sf::Keyboard::isKeyPressed(downKey))
-        dir_y += SLIDER_SPEED;
-
-    slider.move(0, dir_y);
-
-    float slider_top = slider.getPosition().y;
-    float slider_bottom = slider_top + slider_data::SLIDER_SIZE_Y;
-
-    if (slider_top < 0) 
-        slider.setPosition(slider.getPosition().x, 0.f);
-    else if (slider_bottom > window_data::WINDOW_HEIGHT) 
-        slider.setPosition(slider.getPosition().x, window_data::WINDOW_HEIGHT - slider_data::SLIDER_SIZE_Y);
-}
-
 static void updateText(sf::Text &text)
 {
     if (score_data::score_changed)
@@ -49,8 +26,8 @@ static void updateText(sf::Text &text)
 }
 
 static void render(sf::RenderWindow &window, 
-            const sf::RectangleShape &player_one, 
-            const sf::RectangleShape &player_two, 
+            const Player &player_one, 
+            const Player &player_two, 
             const Ball &ball, 
             const sf::Text &score_text) 
 {
@@ -72,19 +49,20 @@ void pong()
 
     const int SLIDER_START_OFF_Y = slider_data::SLIDER_SIZE_Y / 2.f;
 
-    sf::RectangleShape player_one(sf::Vector2f(slider_data::SLIDER_SIZE_X, slider_data::SLIDER_SIZE_Y));
-    player_one.setPosition(sf::Vector2f(slider_data::SLIDER_OFF_X, window_data::WINDOW_HEIGHT / 2.f - SLIDER_START_OFF_Y));
+    sf::Vector2f slider_vec(slider_data::SLIDER_SIZE_X, slider_data::SLIDER_SIZE_Y);
+    Player player_one(slider_vec,
+                        sf::Vector2f(slider_data::SLIDER_OFF_X, window_data::WINDOW_HEIGHT / 2.f - SLIDER_START_OFF_Y));
 
-    sf::RectangleShape player_two(sf::Vector2f(slider_data::SLIDER_SIZE_X, slider_data::SLIDER_SIZE_Y));
-    player_two.setPosition(sf::Vector2f(window_data::WINDOW_WIDHT - slider_data::SLIDER_OFF_X - slider_data::SLIDER_SIZE_X, 
-                                        window_data::WINDOW_HEIGHT / 2.f - SLIDER_START_OFF_Y));
+    Player player_two(slider_vec,
+                    sf::Vector2f(window_data::WINDOW_WIDHT - slider_data::SLIDER_OFF_X - slider_data::SLIDER_SIZE_X,
+                        window_data::WINDOW_HEIGHT / 2.f - SLIDER_START_OFF_Y));
 
     sf::Texture texture;
     if(!texture.loadFromFile("assets/sprites/ball.png"))
     {
         throw std::runtime_error("Failed to load ball texture");
     }
-    const int BALL_SIZE = slider_data::SLIDER_SIZE_X;
+    const int BALL_SIZE = slider_data::SLIDER_SIZE_X;   // make sure the ball is the same size as the sliders
     Ball ball(sf::Vector2f(BALL_SIZE, BALL_SIZE), sf::Vector2f(5.f, 5.f), texture);
 
     sf::Text score_text;
@@ -113,8 +91,8 @@ void pong()
             }
         }
 
-        updateSliderPosition(player_one, slider_data::SLIDER_OFF_X, sf::Keyboard::Up, sf::Keyboard::Down);
-        updateSliderPosition(player_two, 
+        updatePlayerPosition(player_one, slider_data::SLIDER_OFF_X, sf::Keyboard::Up, sf::Keyboard::Down);
+        updatePlayerPosition(player_two, 
                             window_data::WINDOW_WIDHT - slider_data::SLIDER_OFF_X - slider_data::SLIDER_SIZE_X, 
                             sf::Keyboard::Left, 
                             sf::Keyboard::Right);
@@ -123,8 +101,8 @@ void pong()
 
         updateText(score_text);
 
-        ball.handlePlayerCollision(player_one.getGlobalBounds());
-        ball.handlePlayerCollision(player_two.getGlobalBounds());
+        ball.handlePlayerCollision(player_one._slider.getGlobalBounds());
+        ball.handlePlayerCollision(player_two._slider.getGlobalBounds());
 
         render(window, player_one, player_two, ball, score_text);
     }

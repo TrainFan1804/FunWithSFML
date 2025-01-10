@@ -9,7 +9,7 @@
 Ball::Ball(const sf::Vector2f &size, 
             const sf::Vector2f &velo,
             const sf::Texture &texture)
-    : _WIDHT(size.x), _velocity(velo)
+    : _velocity(velo)
 {
     _BALL_MID_POS = sf::Vector2f(window_data::WINDOW_WIDHT / 2.f - size.x / 2.f, 
                                 window_data::WINDOW_HEIGHT / 2.f - size.x / 2.f);
@@ -23,7 +23,7 @@ const sf::Vector2f &Ball::getPos()
     return _ball.getPosition();
 }
 
-void Ball::setPos(sf::Vector2f &pos)
+void Ball::setPos(const sf::Vector2f &pos)
 {
     _ball.setPosition(pos);
 }
@@ -31,6 +31,7 @@ void Ball::setPos(sf::Vector2f &pos)
 void Ball::move()
 {
     _ball.move(_velocity);
+    const int _WIDHT = _ball.getSize().x;
     // if ball hit bootm / top reverse velocity
     if (_ball.getPosition().y <= 0 || _ball.getPosition().y + _WIDHT >= window_data::WINDOW_HEIGHT)
         _velocity.y = -_velocity.y;
