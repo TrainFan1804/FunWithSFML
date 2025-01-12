@@ -18,11 +18,14 @@
 
 namespace
 {
+    bool win_was_set = false;
+
     enum class GameState
     {
         MENU,
         COUNTDOWN,
-        PLAYING
+        PLAYING,
+        END
     };
 
     void initPlaying(std::unique_ptr<Player> &player_one, std::unique_ptr<Player> &player_two, 
@@ -76,6 +79,13 @@ namespace
         window.draw(ball);
         window.draw(score_text);
     }
+
+    void setWinningText(sf::Text &text)
+    {
+        text.setString(std::string("Game end. Winner is ")
+            + (score_data::player_one == 10 ? "Player one" : "Player two"));
+        win_was_set = false;
+    }
 }
 
 void pong()
@@ -103,6 +113,10 @@ void pong()
     sf::Text countdown_text("", font, 44);
     countdown_text.setFillColor(sf::Color::Red);
     countdown_text.setPosition(window_data::WINDOW_MID);
+
+    sf::Text end_text("Winner is ", font, 44);
+    end_text.setFillColor(sf::Color::White);
+    end_text.setPosition(window_data::WINDOW_MID);
 
     std::unique_ptr<Player> player_one;
     std::unique_ptr<Player> player_two;
@@ -167,6 +181,19 @@ void pong()
             ball->handlePlayerCollision(player_one->getSlider().getGlobalBounds());
             ball->handlePlayerCollision(player_two->getSlider().getGlobalBounds());
             playingRender(window, *player_one, *player_two, *ball, *score_text);
+            if (score_data::player_one == 10 
+                || score_data::player_two == 10)
+            {
+                state = GameState::END;
+                win_was_set = true;
+            } 
+            break;
+        case GameState::END:
+            if (win_was_set)
+            {
+                setWinningText(end_text);
+            }
+            window.draw(end_text);
             break;
         }
 
