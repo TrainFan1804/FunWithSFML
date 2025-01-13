@@ -2,6 +2,7 @@
 #include "pong_data.h"
 #include "Ball.h"
 #include "Player.h"
+#include "resmg/FontManager.h"
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
@@ -12,6 +13,7 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/Font.hpp>
+
 #include <cstdlib>
 #include <memory>
 #include <string>
@@ -98,11 +100,13 @@ void pong()
 
     GameState state = GameState::MENU;
 
-    sf::Font font;
-    if (!font.loadFromFile("assets/fonts/OpenSans-Medium.ttf"))
-    {
-        throw std::runtime_error("Failed to load font");
-    }
+    FontManager res_mg;
+    res_mg.loadResource(1, "assets/fonts/OpenSans-Medium.ttf");
+    sf::Font font = res_mg.getResource(1);
+    //if (!font.loadFromFile("assets/fonts/OpenSans-Medium.ttf"))
+    //{
+        //throw std::runtime_error("Failed to load font");
+    //}
 
     sf::Text menu_text("Press ENTER to Start", font, 44);
     menu_text.setFillColor(sf::Color::White);

@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "pong_data.h"
+
 #include <SFML/Graphics/RectangleShape.hpp>
 
 Player::Player(const sf::Vector2f &size,
