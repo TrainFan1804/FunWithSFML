@@ -8,4 +8,4 @@ add_library(
 )
 
 target_include_directories(Pong PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(Pong PRIVATE FontManager)
+target_link_libraries(Pong PRIVATE ResourceManager)

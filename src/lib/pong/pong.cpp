@@ -2,7 +2,7 @@
 #include "pong_data.h"
 #include "Ball.h"
 #include "Player.h"
-#include "resmg/FontManager.h"
+#include "resmg/ResourceManager.h"
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
@@ -20,7 +20,12 @@
 
 namespace
 {
+    enum class GameState;
+
     bool win_was_set = false;
+    GameState state;
+    ResourceManager<sf::Font> ft_mg;
+    ResourceManager<sf::Texture> tx_mg;
 
     enum class GameState
     {
@@ -31,8 +36,7 @@ namespace
     };
 
     void initPlaying(std::unique_ptr<Player> &player_one, std::unique_ptr<Player> &player_two, 
-                        std::unique_ptr<Ball> &ball, std::unique_ptr<sf::Texture> &ball_texture, 
-                        std::unique_ptr<sf::Text> &score_text, sf::Font &font)
+                        std::unique_ptr<Ball> &ball, std::unique_ptr<sf::Text> &score_text)
     {
         const int SLIDER_START_OFF_Y = slider_data::SLIDER_SIZE_Y / 2.f;
 
@@ -44,17 +48,13 @@ namespace
                         sf::Vector2f(window_data::WINDOW_WIDHT - slider_data::SLIDER_OFF_X - slider_data::SLIDER_SIZE_X,
                             window_data::WINDOW_HEIGHT / 2.f - SLIDER_START_OFF_Y));
 
-        ball_texture = std::make_unique<sf::Texture>();
-        if(!ball_texture->loadFromFile("assets/sprites/ball.png"))
-        {
-            throw std::runtime_error("Failed to load ball texture");
-        }
+        tx_mg.loadResource(1, "assets/sprites/ball.png");
 
         const int BALL_SIZE = slider_data::SLIDER_SIZE_X;   // make sure the ball is the same size as the sliders
-        ball = std::make_unique<Ball>(sf::Vector2f(BALL_SIZE, BALL_SIZE), sf::Vector2f(5.f, 5.f), *ball_texture);
+        ball = std::make_unique<Ball>(sf::Vector2f(BALL_SIZE, BALL_SIZE), sf::Vector2f(5.f, 5.f), tx_mg.getResource(1));
 
         score_text = std::make_unique<sf::Text>();
-        score_text->setFont(font);
+        score_text->setFont(ft_mg.getResource(0));
         score_text->setCharacterSize(44);
         score_text->setStyle(sf::Text::Bold);
         score_text->setFillColor(sf::Color::White);
@@ -98,19 +98,16 @@ void pong()
                                                 // floating on my system
     window.setFramerateLimit(60);
 
-    GameState state = GameState::MENU;
+    state = GameState::MENU;
 
-    FontManager res_mg;
-    res_mg.loadResource(1, "assets/fonts/OpenSans-Medium.ttf");
-    sf::Font font = res_mg.getResource(1);
-    //if (!font.loadFromFile("assets/fonts/OpenSans-Medium.ttf"))
-    //{
-        //throw std::runtime_error("Failed to load font");
-    //}
+    ft_mg.loadResource(0, "assets/fonts/OpenSans-Medium.ttf");
+    sf::Font font = ft_mg.getResource(0);
 
     sf::Text menu_text("Press ENTER to Start", font, 44);
     menu_text.setFillColor(sf::Color::White);
     menu_text.setPosition(window_data::WINDOW_MID);
+
+
 
     sf::Clock countdown_clock;
     float countdown_time = 3.0f;
@@ -148,10 +145,9 @@ void pong()
         switch (state) 
         {
         case GameState::MENU: 
-
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
             {
-                initPlaying(player_one, player_two, ball, ball_texture, score_text, font);
+                initPlaying(player_one, player_two, ball, score_text);
                 state = GameState::COUNTDOWN;
                 countdown_clock.restart();
             }

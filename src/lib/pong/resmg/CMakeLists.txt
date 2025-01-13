@@ -1,5 +1,5 @@
 add_library(
-        FontManager FontManager.cpp
+        ResourceManager ResourceManager.cpp
 )
 
-target_include_directories(FontManager PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(ResourceManager PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

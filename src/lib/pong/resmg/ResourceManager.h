@@ -1,13 +1,13 @@
 #ifndef RESOURCEMANAGER_H
 #define RESOURCEMANAGER_H
 
-#include <SFML/Graphics/Font.hpp>
-
 #include <memory>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
 
-class FontManager
+template<typename Resource>
+class ResourceManager
 {
 public:
     /**
@@ -17,9 +17,16 @@ public:
                 Also returns false when resource is already loaded!
      */
     bool loadResource(int id, const std::string &resource_path);
-    sf::Font &getResource(int id);
+    Resource &getResource(int id);
+    /**
+        Unload resource from memory.
+
+        @return true if resource could be reloaded otherwise false.
+                Only returns false when there is no resource with given id
+     */
+    bool unloadResource(int id);
 private:
-     std::unordered_map<int, std::unique_ptr<sf::Font>> _resource_map;
+     std::unordered_map<int, std::unique_ptr<Resource>> _resource_map;
 };
 
 #endif // RESOURCEMANAGER_H
