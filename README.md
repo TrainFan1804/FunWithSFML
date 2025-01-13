@@ -78,4 +78,5 @@ Here I tried to create a small game of pong.
 
 # Misc
 
-This project use the Open Sans font.
+This project use the Open Sans font. \
+I doesn't test it on Windows or MacOS so I don't know if it will work on those.
