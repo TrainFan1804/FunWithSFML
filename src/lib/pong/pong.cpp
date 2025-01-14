@@ -2,8 +2,9 @@
 #include "pong_data.h"
 #include "Ball.h"
 #include "Player.h"
-#include "core/event/event_handler.h"
+#include "core/rendering/Renderer.h"
 #include "core/resmg/ResourceManager.h"
+#include "core/event/event_handler.h"
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
@@ -25,6 +26,7 @@ namespace
 
     bool win_was_set = false;
     GameState state;
+    Renderer renderer;
     ResourceManager<sf::Font> ft_mg;
     ResourceManager<sf::Texture> tx_mg;
 
@@ -44,21 +46,25 @@ namespace
         sf::Vector2f slider_vec(slider_data::SLIDER_SIZE_X, slider_data::SLIDER_SIZE_Y);
         player_one = std::make_unique<Player>(slider_vec,
                             sf::Vector2f(slider_data::SLIDER_OFF_X, window_data::WINDOW_HEIGHT / 2.f - SLIDER_START_OFF_Y));
+        renderer.add(*player_one);
 
         player_two = std::make_unique<Player>(slider_vec,
                         sf::Vector2f(window_data::WINDOW_WIDHT - slider_data::SLIDER_OFF_X - slider_data::SLIDER_SIZE_X,
                             window_data::WINDOW_HEIGHT / 2.f - SLIDER_START_OFF_Y));
+        renderer.add(*player_two);
 
-        tx_mg.loadResource(1, "assets/sprites/ball.png");
+        tx_mg.loadResource(0, "assets/sprites/ball.png");
 
         const int BALL_SIZE = slider_data::SLIDER_SIZE_X;   // make sure the ball is the same size as the sliders
-        ball = std::make_unique<Ball>(sf::Vector2f(BALL_SIZE, BALL_SIZE), sf::Vector2f(5.f, 5.f), tx_mg.getResource(1));
+        ball = std::make_unique<Ball>(sf::Vector2f(BALL_SIZE, BALL_SIZE), sf::Vector2f(5.f, 5.f), tx_mg.getResource(0));
+        renderer.add(*ball);
 
         score_text = std::make_unique<sf::Text>();
         score_text->setFont(ft_mg.getResource(0));
         score_text->setCharacterSize(44);
         score_text->setStyle(sf::Text::Bold);
         score_text->setFillColor(sf::Color::White);
+        renderer.add(*score_text);
     }
 
     void updateScoreText(std::unique_ptr<sf::Text> &text)
@@ -69,18 +75,6 @@ namespace
             text->setPosition((window_data::WINDOW_WIDHT - text->getGlobalBounds().width) / 2.f, window_data::WINDOW_HEIGHT * 0.02f);
             score_data::score_changed = false;
         } 
-    }
-
-    void playingRender(sf::RenderWindow &window,
-                const Player &player_one, 
-                const Player &player_two, 
-                const Ball &ball, 
-                const sf::Text &score_text) 
-    {
-        window.draw(player_one);
-        window.draw(player_two);
-        window.draw(ball);
-        window.draw(score_text);
     }
 
     void setWinningText(sf::Text &text)
@@ -107,8 +101,7 @@ void pong()
     sf::Text menu_text("Press ENTER to Start", font, 44);
     menu_text.setFillColor(sf::Color::White);
     menu_text.setPosition(window_data::WINDOW_MID);
-
-
+    renderer.add(menu_text);
 
     sf::Clock countdown_clock;
     float countdown_time = 3.0f;
@@ -137,24 +130,25 @@ void pong()
         case GameState::MENU: 
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
             {
-                initPlaying(player_one, player_two, ball, score_text);
+                renderer.flush();
+                renderer.add(countdown_text);
                 state = GameState::COUNTDOWN;
                 countdown_clock.restart();
             }
-            window.draw(menu_text);
             break;
         case GameState::COUNTDOWN: 
         {
             float remaining_time = countdown_time - countdown_clock.getElapsedTime().asSeconds();
             if (remaining_time <= 0)
             {
+                renderer.flush();
+                initPlaying(player_one, player_two, ball, score_text);
                 state = GameState::PLAYING;
             }
             else
             {
                 countdown_text.setString("Starting in: " + std::to_string(static_cast<int>(remaining_time + 1)));
             }
-            window.draw(countdown_text);
             break;
         }
         case GameState::PLAYING:
@@ -170,12 +164,13 @@ void pong()
 
             ball->handlePlayerCollision(player_one->getSlider().getGlobalBounds());
             ball->handlePlayerCollision(player_two->getSlider().getGlobalBounds());
-            playingRender(window, *player_one, *player_two, *ball, *score_text);
             if (score_data::player_one == 10 
                 || score_data::player_two == 10)
             {
-                state = GameState::END;
+                renderer.flush();
+                renderer.add(end_text);
                 win_was_set = true;
+                state = GameState::END;
             } 
             break;
         case GameState::END:
@@ -183,10 +178,14 @@ void pong()
             {
                 setWinningText(end_text);
             }
-            window.draw(end_text);
             break;
         }
 
+        renderer.render(window);
         window.display();
     }
+
+    renderer.flush();
+    ft_mg.unloadResource(0);
+    tx_mg.unloadResource(0);
 }
