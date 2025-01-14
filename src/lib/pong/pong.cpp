@@ -2,7 +2,8 @@
 #include "pong_data.h"
 #include "Ball.h"
 #include "Player.h"
-#include "resmg/ResourceManager.h"
+#include "core/event/event_handler.h"
+#include "core/resmg/ResourceManager.h"
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
@@ -127,18 +128,7 @@ void pong()
 
     while (window.isOpen())
     {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            switch(event.type)
-            {
-            case sf::Event::Closed:
-                window.close();
-                break;
-            default:
-                break;
-            }
-        }
+        handleEvent(window);
 
         window.clear(sf::Color::Black);
 
