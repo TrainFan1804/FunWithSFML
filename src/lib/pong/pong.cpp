@@ -42,8 +42,8 @@ namespace
                         std::unique_ptr<Ball> &ball, std::unique_ptr<sf::Text> &score_text)
     {
         const int SLIDER_START_OFF_Y = slider_data::SLIDER_SIZE_Y / 2.f;
-
         sf::Vector2f slider_vec(slider_data::SLIDER_SIZE_X, slider_data::SLIDER_SIZE_Y);
+
         player_one = std::make_unique<Player>(slider_vec,
                             sf::Vector2f(slider_data::SLIDER_OFF_X, window_data::WINDOW_HEIGHT / 2.f - SLIDER_START_OFF_Y));
         renderer.add(*player_one);
@@ -122,7 +122,6 @@ void pong()
     while (window.isOpen())
     {
         handleEvent(window);
-
         window.clear(sf::Color::Black);
 
         switch (state) 
@@ -159,9 +158,7 @@ void pong()
                                 sf::Keyboard::Right);
 
             ball->move();
-
             updateScoreText(score_text);
-
             ball->handlePlayerCollision(player_one->getSlider().getGlobalBounds());
             ball->handlePlayerCollision(player_two->getSlider().getGlobalBounds());
             if (score_data::player_one == 10 
@@ -180,11 +177,9 @@ void pong()
             }
             break;
         }
-
         renderer.render(window);
         window.display();
     }
-
     renderer.flush();
     ft_mg.unloadResource(0);
     tx_mg.unloadResource(0);
