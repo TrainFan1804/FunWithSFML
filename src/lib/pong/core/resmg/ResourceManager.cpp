@@ -1,4 +1,5 @@
 #include "ResourceManager.h"
+#include "../debug/ReportLogger.h"
 
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Texture.hpp>
@@ -20,6 +21,7 @@ bool ResourceManager<Resource>::loadResource(int id, const std::string &resource
     auto new_resource = std::make_unique<Resource>();
     if (!new_resource->loadFromFile(resource_path))
     {
+        ReportLogger::get_instance().log("No resource under paht \"" + resource_path + "\" found", ReportLogger::ERROR);
         throw std::runtime_error("Failed to load resource: " + resource_path);
     }
     _resource_map.emplace(id, std::move(new_resource));

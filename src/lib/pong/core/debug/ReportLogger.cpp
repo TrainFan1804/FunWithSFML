@@ -5,9 +5,27 @@
 #include <ctime>
 #include <sstream>
 
-ReportLogger::ReportLogger(const std::string &filename)
+ReportLogger &ReportLogger::get_instance()
 {
-    _log_file.open(filename, std::ios::app);
+    static ReportLogger instance;
+    return instance;
+}
+
+void ReportLogger::log(const std::string &message)
+{
+    log(message, LoggerStatus::DEBUG);
+}
+
+void ReportLogger::log(const std::string &message, LoggerStatus status)
+{
+    std::string timestamp = get_current_timestamp();
+    std::string formatted_message = "[" + timestamp + "] " + get_status_string(status) + ": " + message; 
+    _log_file << formatted_message << std::endl;
+}
+
+ReportLogger::ReportLogger()
+{
+    _log_file.open("Debug.log", std::ios::app);
     if (!_log_file.is_open()) throw std::runtime_error("Couldn't open log file");
 }
 
@@ -19,18 +37,6 @@ ReportLogger::~ReportLogger()
     }
 }
 
-void ReportLogger::log(const std::string &message)
-{
-    log(message, "DEFAULT");
-}
-
-void ReportLogger::log(const std::string &message, const std::string &log_type)
-{
-    std::string timestamp = get_current_timestamp();
-    std::string formatted_message = "[" + timestamp + "] " + log_type + ": " + message; 
-    _log_file << formatted_message << std::endl;
-}
-
 std::string ReportLogger::get_current_timestamp() 
 {
     auto time_now = std::time(nullptr);
@@ -39,4 +45,14 @@ std::string ReportLogger::get_current_timestamp()
     std::ostringstream oss;
     oss << std::put_time(&tm, "%d-%m-%Y %H-%M-%S");
     return oss.str();
+}
+
+std::string ReportLogger::get_status_string(LoggerStatus status)
+{
+    switch (status) 
+    {
+    case DEBUG: return "DEBUG";
+    case ERROR: return "ERROR";
+    default: return "UNKNOWN";
+    }
 }
